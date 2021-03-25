@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.book_club">
+    package="com.iamkipb.book_club">
    <application
         android:label="book_club"
         android:icon="@mipmap/ic_launcher">
