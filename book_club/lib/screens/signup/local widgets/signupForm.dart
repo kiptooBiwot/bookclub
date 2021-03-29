@@ -1,7 +1,31 @@
 import 'package:book_club/screens/login/login.dart';
+import 'package:book_club/states/currentUser.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class SignupForm extends StatelessWidget {
+class SignupForm extends StatefulWidget {
+  @override
+  _SignupFormState createState() => _SignupFormState();
+}
+
+class _SignupFormState extends State<SignupForm> {
+  TextEditingController _fullNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+
+  void _signUpUser(String email, String password, BuildContext context) async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+
+    try {
+      if (await _currentUser.signUpUser(email, password)) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,6 +46,7 @@ class SignupForm extends StatelessWidget {
             ),
           ),
           TextFormField(
+            controller: _fullNameController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.person_outline),
               hintText: 'Full Name',
@@ -29,6 +54,7 @@ class SignupForm extends StatelessWidget {
           ),
           SizedBox(height: 5.0),
           TextFormField(
+            controller: _emailController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.alternate_email),
               hintText: 'Email',
@@ -36,6 +62,7 @@ class SignupForm extends StatelessWidget {
           ),
           SizedBox(height: 5.0),
           TextFormField(
+            controller: _passwordController,
             obscureText: true,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline),
@@ -44,6 +71,7 @@ class SignupForm extends StatelessWidget {
           ),
           SizedBox(height: 5.0),
           TextFormField(
+            controller: _confirmPasswordController,
             obscureText: true,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_open),
@@ -70,7 +98,19 @@ class SignupForm extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.zero),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              if (_passwordController.text == _confirmPasswordController.text) {
+                _signUpUser(
+                    _emailController.text, _passwordController.text, context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Passwords did not match!'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
             child: Text(
               'Sign Up',
               style: TextStyle(
