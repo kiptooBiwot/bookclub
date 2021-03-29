@@ -17,7 +17,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
     CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
 
     try {
-      if (await _currentUser.logInUser(email, password)) {
+      String _returnString =
+          await _currentUser.logInUserWithEmail(email, password);
+
+      if (_returnString == 'Success') {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => HomeScreen(),
@@ -26,8 +29,8 @@ class _OurLoginFormState extends State<OurLoginForm> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Incorrect log in credentials'),
-            duration: Duration(seconds: 5),
+            content: Text(_returnString),
+            duration: Duration(seconds: 2),
           ),
         );
       }
